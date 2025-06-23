@@ -58,7 +58,7 @@ pub enum Difference {
 /// The information about a full changeset
 #[derive(Clone, Debug)]
 pub struct Changeset {
-    /// An ordered vector of `Difference` objects, coresponding
+    /// An ordered vector of `Difference` objects, corresponding
     /// to the differences within the text
     pub diffs: Vec<Difference>,
     /// The split used when creating the `Changeset`
