@@ -1,5 +1,10 @@
-# difference_rs [![](https://travis-ci.org/naomijub/difference_rs.svg?branch=master)](https://travis-ci.org/naomijub/difference_rs) [![](https://ci.appveyor.com/api/projects/status/fgfp1mw85ffkl9bu/branch/master?svg=true)](https://ci.appveyor.com/project/naomijub/difference-rs/branch/master) [![](https://coveralls.io/repos/naomijub/difference_rs/badge.svg?branch=master&service=github)](https://coveralls.io/github/naomijub/difference_rs?branch=master) [![](https://img.shields.io/crates/v/difference.svg)](https://crates.io/crates/difference)
-A Rust text diffing library with built-in diffing assertion.
+# difference_rs 
+
+[![License:MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/naomijub/difference-rs/actions/workflows/rust.yaml/badge.svg?branch=main)](https://github.com/naomijub/difference-rs/actions/workflows/rust.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/naomijub/difference-rs/badge.svg)](https://coveralls.io/github/naomijub/difference-rs)
+
+A Rust, updated, text diffing library with built-in diffing assertion.
 
 __[Examples](/Examples.md)__
 
