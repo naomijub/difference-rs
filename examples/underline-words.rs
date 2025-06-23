@@ -1,5 +1,5 @@
-extern crate term;
 extern crate difference_rs;
+extern crate term;
 use difference_rs::{Changeset, Difference};
 use std::io::Write;
 

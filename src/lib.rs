@@ -42,8 +42,8 @@ mod display;
 mod lcs;
 mod merge;
 
-use lcs::lcs;
-use merge::merge;
+use crate::lcs::lcs;
+use crate::merge::merge;
 
 /// Defines the contents of a changeset
 /// Changesets will be delivered in order of appearance in the original string

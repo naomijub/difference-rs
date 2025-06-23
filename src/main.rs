@@ -24,7 +24,7 @@ fn main() {
     opts.optopt("s", "split", "", "char|word|line");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
-        Err(f) => panic!("{}",f.to_string()),
+        Err(f) => panic!("{}", f.to_string()),
     };
 
     let split = match matches.opt_str("s") {

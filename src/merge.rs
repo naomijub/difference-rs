@@ -1,4 +1,4 @@
-use Difference;
+use crate::Difference;
 
 // merges the changes from two strings, given a common substring
 pub fn merge(orig: &str, edit: &str, common: &str, split: &str) -> Vec<Difference> {
