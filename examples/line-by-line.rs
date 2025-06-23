@@ -1,6 +1,6 @@
+extern crate difference_rs;
 extern crate term;
-extern crate difference;
-use difference::{Difference, Changeset};
+use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
 /*
@@ -10,11 +10,10 @@ use std::io::Write;
  * on the type of `Difference`.
  *
  * Screenshot:
- * https://raw.githubusercontent.com/johannhof/difference.rs/master/assets/git-style.png
+ * https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/git-style.png
  */
 
 #[allow(unused_must_use)]
-#[cfg_attr(feature = "cargo-clippy", allow(needless_range_loop))]
 fn main() {
     let text1 = "Roses are red, violets are blue,\n\
                I wrote this library here,\n\
@@ -31,8 +30,8 @@ fn main() {
 
     let mut t = term::stdout().unwrap();
 
-    for i in 0..diffs.len() {
-        match diffs[i] {
+    for diff in diffs {
+        match diff {
             Difference::Same(ref x) => {
                 t.reset().unwrap();
                 writeln!(t, " {}", x);

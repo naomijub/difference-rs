@@ -1,5 +1,3 @@
-
-
 use super::{Changeset, Difference};
 use std::fmt;
 
@@ -47,7 +45,7 @@ mod tests {
         }
         println!("Repr Result:");
         repr_bytes(result);
-        println!("");
+        println!();
         println!("--Result Repr DONE");
 
         println!("Debug Expected:");
@@ -56,7 +54,7 @@ mod tests {
         }
         println!("Repr Expected:");
         repr_bytes(expected);
-        println!("");
+        println!();
         println!("--Expected Repr DONE");
     }
 
@@ -70,7 +68,6 @@ mod tests {
                 b'\r' => print!("\\r"),
                 32..=126 => print!("{}", *b as char), // visible ASCII
                 _ => print!(r"\x{:0>2x}", b),
-
             }
         }
     }
@@ -95,6 +92,5 @@ mod tests {
         write!(result, "{}", ch).unwrap();
         debug_bytes(&result, expected);
         assert_eq!(result, vb(expected));
-
     }
 }

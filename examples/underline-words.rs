@@ -1,10 +1,10 @@
 extern crate term;
-extern crate difference;
-use difference::{Difference, Changeset};
+extern crate difference_rs;
+use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
 // Screenshot:
-// https://raw.githubusercontent.com/johannhof/difference.rs/master/assets/word-underline.png
+// https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/word-underline.png
 
 #[allow(unused_must_use)]
 fn main() {
@@ -32,7 +32,7 @@ fn main() {
     }
     t.reset().unwrap();
 
-    writeln!(t, "");
+    writeln!(t);
 
     for c in &diffs {
         match *c {

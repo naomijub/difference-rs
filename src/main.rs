@@ -1,7 +1,7 @@
 #![deny(warnings)]
 
 #[cfg(feature = "bin")]
-extern crate difference;
+extern crate difference_rs;
 #[cfg(feature = "bin")]
 extern crate getopts;
 
@@ -24,7 +24,7 @@ fn main() {
     opts.optopt("s", "split", "", "char|word|line");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
-        Err(f) => panic!(f.to_string()),
+        Err(f) => panic!("{}",f.to_string()),
     };
 
     let split = match matches.opt_str("s") {
@@ -35,12 +35,9 @@ fn main() {
     };
 
     if matches.free.len() > 1 {
-        let ch = difference::Changeset::new(&matches.free[0], &matches.free[1], split);
+        let ch = difference_rs::Changeset::new(&matches.free[0], &matches.free[1], split);
         println!("{}", ch);
     } else {
         print!("{}", opts.usage(&format!("Usage: {} [options]", program)));
-        return;
     };
-
-
 }

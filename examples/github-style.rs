@@ -1,10 +1,10 @@
+extern crate difference_rs;
 extern crate term;
-extern crate difference;
-use difference::{Difference, Changeset};
+use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
 // Screenshot:
-// https://raw.githubusercontent.com/johannhof/difference.rs/master/assets/github-style.png
+// https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/github-style.png
 
 #[allow(unused_must_use)]
 fn main() {
@@ -51,7 +51,7 @@ fn main() {
                                 _ => (),
                             }
                         }
-                        writeln!(t, "");
+                        writeln!(t);
                     }
                     _ => {
                         t.fg(term::color::BRIGHT_GREEN).unwrap();

@@ -1,18 +1,18 @@
 [package]
-name = "difference"
-version = "2.0.0"
-authors = ["Johann Hofmann <mail@johann-hofmann.com>"]
+name = "difference-rs"
+version = "3.0.0"
+authors = ["Julia Naomi <jnboeira@outlook.com>", "Johann Hofmann <mail@johann-hofmann.com>"]
 description = "A Rust text diffing and assertion library."
-repository = "https://github.com/johannhof/difference.rs"
-documentation = "https://johannhof.github.io/difference.rs/difference/index.html"
+repository = "https://github.com/naomijub/difference_rs"
+documentation = "https://johannhof.github.io/difference_rs/difference/index.html"
 readme = "README.md"
 categories = ["text-processing", "development-tools::testing"]
 keywords = ["diff", "text", "compare", "changes", "assert"]
 license = "MIT"
 
 [badges]
-travis-ci = { repository = "johannhof/difference.rs" }
-appveyor = { repository = "johannhof/difference.rs" }
+travis-ci = { repository = "naomijub/difference_rs" }
+appveyor = { repository = "naomijub/difference_rs" }
 
 [[bin]]
 name = "difference"

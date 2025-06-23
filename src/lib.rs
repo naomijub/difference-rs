@@ -7,13 +7,13 @@
 //!
 //! ```toml
 //! [dependencies]
-//! difference = "2.0"
+//! difference_rs = "3.0"
 //! ```
 //!
 //! Now you can use the crate in your code
 //!
 //! ```ignore
-//! extern crate difference;
+//! extern crate difference_rs;
 //! ```
 //!
 //! ## Examples
@@ -21,7 +21,7 @@
 //! See [Examples.md](Examples.md) for more examples.
 //!
 //! ```rust
-//! use difference::{Difference, Changeset};
+//! use difference_rs::{Difference, Changeset};
 //!
 //! let changeset = Changeset::new("test", "tent", "");
 //!
@@ -33,14 +33,14 @@
 //! ]);
 //! ```
 
-#![crate_name = "difference"]
-#![doc(html_root_url = "http://docs.rs/difference")]
+#![crate_name = "difference_rs"]
+#![doc(html_root_url = "http://docs.rs/difference-rs")]
 #![deny(missing_docs)]
 #![deny(warnings)]
 
+mod display;
 mod lcs;
 mod merge;
-mod display;
 
 use lcs::lcs;
 use merge::merge;
@@ -85,7 +85,7 @@ impl Changeset {
     /// # Examples
     ///
     /// ```
-    /// use difference::{Changeset, Difference};
+    /// use difference_rs::{Changeset, Difference};
     ///
     /// let changeset = Changeset::new("test", "tent", "");
     ///
@@ -121,8 +121,8 @@ impl Changeset {
 /// # Examples
 ///
 /// ```
-/// use difference::diff;
-/// use difference::Difference;
+/// use difference_rs::diff;
+/// use difference_rs::Difference;
 ///
 /// let (dist, changeset) = diff("test", "tent", "");
 ///
@@ -147,7 +147,7 @@ pub fn diff(orig: &str, edit: &str, split: &str) -> (i32, Vec<Difference>) {
 ///
 /// ```
 /// #[macro_use(assert_diff)]
-/// extern crate difference;
+/// extern crate difference_rs;
 /// # fn main() { }
 /// ```
 ///
@@ -158,21 +158,23 @@ pub fn diff(orig: &str, edit: &str, split: &str) -> (i32, Vec<Difference>) {
 /// Will print an error with a colorful diff in case of failure.
 #[macro_export]
 macro_rules! assert_diff {
-    ($orig:expr , $edit:expr, $split: expr, $expected: expr) => ({
+    ($orig:expr , $edit:expr, $split: expr, $expected: expr) => {{
         let orig = $orig;
         let edit = $edit;
 
         let changeset = $crate::Changeset::new(orig, edit, &($split));
         if changeset.distance != $expected {
             println!("{}", changeset);
-            panic!("assertion failed: edit distance between {:?} and {:?} is {} and not {}, see \
+            panic!(
+                "assertion failed: edit distance between {:?} and {:?} is {} and not {}, see \
                     diffset above",
-                   orig,
-                   edit,
-                   changeset.distance,
-                   &($expected))
+                orig,
+                edit,
+                changeset.distance,
+                &($expected)
+            )
         }
-    })
+    }};
 }
 
 /// **This function is deprecated, `Changeset` now implements the `Display` trait instead**
@@ -185,10 +187,13 @@ macro_rules! assert_diff {
 /// # Examples
 ///
 /// ```
-/// use difference::print_diff;
+/// use difference_rs::print_diff;
 /// print_diff("Diffs are awesome", "Diffs are cool", " ");
 /// ```
-#[deprecated(since = "1.0.0", note = "`Changeset` now implements the `Display` trait instead")]
+#[deprecated(
+    since = "1.0.0",
+    note = "`Changeset` now implements the `Display` trait instead"
+)]
 pub fn print_diff(orig: &str, edit: &str, split: &str) {
     let ch = Changeset::new(orig, edit, split);
     println!("{}", ch);
