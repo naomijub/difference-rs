@@ -4,6 +4,7 @@ version = "3.0.0"
 authors = ["Julia Naomi <jnboeira@outlook.com>", "Johann Hofmann <mail@johann-hofmann.com>"]
 description = "A Rust text diffing and assertion library."
 repository = "https://github.com/naomijub/difference_rs"
+documentation = "https://docs.rs/difference-rs/latest/difference_rs/"
 readme = "README.md"
 categories = ["text-processing", "development-tools::testing"]
 keywords = ["diff", "text", "compare", "changes", "assert"]
