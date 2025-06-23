@@ -8,7 +8,7 @@ readme = "README.md"
 categories = ["text-processing", "development-tools::testing"]
 keywords = ["diff", "text", "compare", "changes", "assert"]
 license = "MIT"
-edition = "2018"
+edition = "2021"
 
 [[bin]]
 name = "difference_rs"
