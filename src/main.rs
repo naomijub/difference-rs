@@ -1,11 +1,6 @@
 #![deny(warnings)]
 
 #[cfg(feature = "bin")]
-extern crate difference_rs;
-#[cfg(feature = "bin")]
-extern crate getopts;
-
-#[cfg(feature = "bin")]
 use getopts::Options;
 #[cfg(feature = "bin")]
 use std::env;

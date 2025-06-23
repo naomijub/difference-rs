@@ -1,8 +1,5 @@
-extern crate difference_rs;
-extern crate quickcheck;
-
 use difference_rs::{Changeset, Difference};
-use quickcheck::{quickcheck, QuickCheck, TestResult};
+use quickcheck::{QuickCheck, TestResult, quickcheck};
 use std::fmt;
 
 const DEBUG: bool = false;

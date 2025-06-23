@@ -12,9 +12,6 @@
 //!
 //! Now you can use the crate in your code
 //!
-//! ```ignore
-//! extern crate difference_rs;
-//! ```
 //!
 //! ## Examples
 //!
@@ -147,7 +144,6 @@ pub fn diff(orig: &str, edit: &str, split: &str) -> (i32, Vec<Difference>) {
 ///
 /// ```
 /// #[macro_use(assert_diff)]
-/// extern crate difference_rs;
 /// # fn main() { }
 /// ```
 ///
@@ -158,7 +154,7 @@ pub fn diff(orig: &str, edit: &str, split: &str) -> (i32, Vec<Difference>) {
 /// Will print an error with a colorful diff in case of failure.
 #[macro_export]
 macro_rules! assert_diff {
-    ($orig:expr , $edit:expr, $split: expr, $expected: expr) => {{
+    ($orig:expr_2021 , $edit:expr_2021, $split: expr_2021, $expected: expr_2021) => {{
         let orig = $orig;
         let edit = $edit;
 

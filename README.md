@@ -30,9 +30,6 @@ difference_rs = "3.0"
 ```
 
 Now you can use the crate in your code
-```rust
-extern crate difference_rs;
-```
 
 Using the binary
 -----------------
