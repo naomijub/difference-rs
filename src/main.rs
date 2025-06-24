@@ -33,8 +33,8 @@ fn main() {
 
     if matches.free.len() > 1 {
         let ch = difference_rs::Changeset::new(&matches.free[0], &matches.free[1], split);
-        println!("{}", ch);
+        println!("{ch}");
     } else {
-        print!("{}", opts.usage(&format!("Usage: {} [options]", program)));
-    };
+        print!("{}", opts.usage(&format!("Usage: {program} [options]")));
+    }
 }
