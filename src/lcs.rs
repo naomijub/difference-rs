@@ -22,7 +22,7 @@ fn strsplit<'a>(s: &'a str, split: &str) -> Vec<&'a str> {
 // This algorithm is based on
 // https://en.wikipedia.org/wiki/Longest_common_subsequence_problem#Code_for_the_dynamic_programming_solution
 #[expect(non_snake_case)]
-pub fn lcs(orig: &str, edit: &str, split: &str) -> (i32, String) {
+pub fn lcs(orig: &str, edit: &str, split: &str) -> (i128, String) {
     // make list by custom splits
     let a = strsplit(orig, split);
     let b = strsplit(edit, split);
@@ -54,11 +54,14 @@ pub fn lcs(orig: &str, edit: &str, split: &str) -> (i32, String) {
         }
     }
 
-    let mut i = (N as isize) - 1;
-    let mut j = (M as isize) - 1;
+    let mut i = (N as i128) - 1;
+    let mut j = (M as i128) - 1;
     let mut lcs = Vec::new();
+
     while i >= 0 && j >= 0 {
+        #[expect(clippy::cast_sign_loss)] // Already validated line `let mut i = (N as i128) - 1;`
         let ui = i as usize;
+        #[expect(clippy::cast_sign_loss)] // Already validated line `let mut j = (M as i128) - 1;`
         let uj = j as usize;
         if a[ui] == b[uj] {
             lcs.push(a[ui]);
@@ -74,7 +77,7 @@ pub fn lcs(orig: &str, edit: &str, split: &str) -> (i32, String) {
     }
 
     lcs.reverse();
-    ((N + M - 2 * lcs.len()) as i32, lcs.join(split))
+    ((N + M - 2 * lcs.len()) as i128, lcs.join(split))
 }
 
 #[test]
@@ -107,7 +110,7 @@ fn test_lcs() {
             "The quick brown dog leaps over the lazy cat",
             "\n",
         ),
-        (2, "".to_string())
+        (2, String::new())
     );
     assert_eq!(
         lcs(
@@ -123,7 +126,7 @@ fn test_lcs() {
         (2, "a b : c".to_string())
     );
 
-    assert_eq!(lcs("", "a b c", ""), (5, "".to_string()));
+    assert_eq!(lcs("", "a b c", ""), (5, String::new()));
 
-    assert_eq!(lcs("", " a", " "), (1, "".to_string()));
+    assert_eq!(lcs("", " a", " "), (1, String::new()));
 }

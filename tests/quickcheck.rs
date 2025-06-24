@@ -1,3 +1,4 @@
+#![expect(missing_docs)]
 use difference_rs::{Changeset, Difference};
 use quickcheck::{QuickCheck, TestResult, quickcheck};
 use std::fmt;
@@ -10,7 +11,7 @@ struct Check<'a> {
     changeset: Changeset,
 }
 
-impl<'a> fmt::Display for Check<'a> {
+impl fmt::Display for Check<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
@@ -20,10 +21,10 @@ impl<'a> fmt::Display for Check<'a> {
 
         let mut iter = self.changeset.diffs.iter();
         if let Some(d) = iter.next() {
-            write!(f, "{:?}", d)?;
+            write!(f, "{d:?}")?;
         }
         for d in iter {
-            write!(f, " {:?}", d)?;
+            write!(f, " {d:?}")?;
         }
         write!(f, "]")
     }
@@ -50,7 +51,7 @@ impl<'a> Check<'a> {
 
         for d in &self.changeset.diffs {
             if DEBUG {
-                println!("assert `{:?}` (old: {:?}, new: {:?})", d, old, new);
+                println!("assert `{d:?}` (old: {old:?}, new: {new:?})");
             }
 
             match *d {
@@ -98,11 +99,8 @@ fn issue_19() {
 
 #[test]
 fn fuzzy() {
+    #[expect(clippy::needless_pass_by_value)]
     fn prop(old: Vec<usize>, new: Vec<usize>, words: Vec<char>) -> TestResult {
-        if words.is_empty() {
-            return TestResult::discard();
-        }
-
         fn map_to_words(input: &[usize], words: &[char]) -> String {
             input
                 .iter()
@@ -114,6 +112,9 @@ fn fuzzy() {
                     acc.push(words[x % words.len()]);
                     acc
                 })
+        }
+        if words.is_empty() {
+            return TestResult::discard();
         }
         let old = map_to_words(&old, &words);
         let new = map_to_words(&new, &words);

@@ -1,3 +1,4 @@
+#![expect(missing_docs)]
 use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
@@ -21,45 +22,43 @@ fn main() {
     let mut t = term::stdout().unwrap();
 
     for i in 0..diffs.len() {
+        #[allow(clippy::match_on_vec_items)]
         match diffs[i] {
             Difference::Same(ref x) => {
                 t.reset().unwrap();
-                writeln!(t, " {}", x);
+                writeln!(t, " {x}");
             }
             Difference::Add(ref x) => {
-                match diffs[i - 1] {
-                    Difference::Rem(ref y) => {
-                        t.fg(term::color::GREEN).unwrap();
-                        write!(t, "+");
-                        let Changeset { diffs, .. } = Changeset::new(y, x, " ");
-                        for c in diffs {
-                            match c {
-                                Difference::Same(ref z) => {
-                                    t.fg(term::color::GREEN).unwrap();
-                                    write!(t, "{}", z);
-                                    write!(t, " ");
-                                }
-                                Difference::Add(ref z) => {
-                                    t.fg(term::color::WHITE).unwrap();
-                                    t.bg(term::color::GREEN).unwrap();
-                                    write!(t, "{}", z);
-                                    t.reset().unwrap();
-                                    write!(t, " ");
-                                }
-                                _ => (),
+                if let Some(Difference::Rem(y)) = diffs.get(i - 1) {
+                    t.fg(term::color::GREEN).unwrap();
+                    write!(t, "+");
+                    let Changeset { diffs, .. } = Changeset::new(y, x, " ");
+                    for c in diffs {
+                        match c {
+                            Difference::Same(ref z) => {
+                                t.fg(term::color::GREEN).unwrap();
+                                write!(t, "{z}");
+                                write!(t, " ");
                             }
+                            Difference::Add(ref z) => {
+                                t.fg(term::color::WHITE).unwrap();
+                                t.bg(term::color::GREEN).unwrap();
+                                write!(t, "{z}");
+                                t.reset().unwrap();
+                                write!(t, " ");
+                            }
+                            Difference::Rem(_) => (),
                         }
-                        writeln!(t);
                     }
-                    _ => {
-                        t.fg(term::color::BRIGHT_GREEN).unwrap();
-                        writeln!(t, "+{}", x);
-                    }
-                };
+                    writeln!(t);
+                } else {
+                    t.fg(term::color::BRIGHT_GREEN).unwrap();
+                    writeln!(t, "+{x}");
+                }
             }
             Difference::Rem(ref x) => {
                 t.fg(term::color::RED).unwrap();
-                writeln!(t, "-{}", x);
+                writeln!(t, "-{x}");
             }
         }
     }

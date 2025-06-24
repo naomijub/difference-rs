@@ -1,4 +1,6 @@
 #![deny(warnings)]
+#![cfg(not(tarpaulin_include))]
+#![expect(missing_docs)]
 
 #[cfg(feature = "bin")]
 use getopts::Options;

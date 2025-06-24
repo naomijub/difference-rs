@@ -1,3 +1,4 @@
+#![expect(missing_docs)]
 use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
@@ -17,15 +18,15 @@ fn main() {
         match *c {
             Difference::Same(ref z) => {
                 t.fg(term::color::RED).unwrap();
-                write!(t, "{}", z);
+                write!(t, "{z}");
             }
             Difference::Rem(ref z) => {
                 t.fg(term::color::WHITE).unwrap();
                 t.bg(term::color::RED).unwrap();
-                write!(t, "{}", z);
+                write!(t, "{z}");
                 t.reset().unwrap();
             }
-            _ => (),
+            Difference::Add(_) => (),
         }
     }
     t.reset().unwrap();
@@ -36,15 +37,15 @@ fn main() {
         match *c {
             Difference::Same(ref z) => {
                 t.fg(term::color::GREEN).unwrap();
-                write!(t, "{}", z);
+                write!(t, "{z}");
             }
             Difference::Add(ref z) => {
                 t.fg(term::color::WHITE).unwrap();
                 t.bg(term::color::GREEN).unwrap();
-                write!(t, "{}", z);
+                write!(t, "{z}");
                 t.reset().unwrap();
             }
-            _ => (),
+            Difference::Rem(_) => (),
         }
     }
     t.reset().unwrap();

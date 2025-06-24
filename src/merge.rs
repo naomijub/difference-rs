@@ -75,7 +75,7 @@ fn test_merge() {
         merge("a\nb", "a\n\nb", "a\nb", "\n"),
         vec![
             Difference::Same("a".to_string()),
-            Difference::Add("".to_string()),
+            Difference::Add(String::new()),
             Difference::Same("b".to_string()),
         ]
     );
@@ -85,7 +85,7 @@ fn test_merge() {
         vec![
             Difference::Rem("a".to_string()),
             Difference::Add("c".to_string()),
-            Difference::Same("".to_string()),
+            Difference::Same(String::new()),
         ]
     );
 }
