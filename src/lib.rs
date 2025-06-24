@@ -45,7 +45,7 @@ use crate::merge::merge;
 /// Defines the contents of a changeset
 /// Changesets will be delivered in order of appearance in the original string
 /// Sequences of the same kind will be grouped into one Difference
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Difference {
     /// Sequences that are the same
     Same(String),
@@ -65,7 +65,7 @@ pub struct Changeset {
     /// Common splits are `""` for char-level, `" "` for word-level and `"\n"` for line-level.
     pub split: String,
     /// The edit distance of the `Changeset`
-    pub distance: i32,
+    pub distance: i128,
 }
 
 impl Changeset {
@@ -93,6 +93,7 @@ impl Changeset {
     ///     Difference::Same("t".to_string())
     /// ]);
     /// ```
+    #[must_use]
     pub fn new(orig: &str, edit: &str, split: &str) -> Changeset {
         let (dist, common) = lcs(orig, edit, split);
         Changeset {
@@ -103,49 +104,9 @@ impl Changeset {
     }
 }
 
-/// **This function is deprecated, please use `Changeset::new` instead**
-///
-/// Calculates the edit distance and the changeset for two given strings.
-/// The first string is assumed to be the "original", the second to be an
-/// edited version of the first. The third parameter specifies how to split
-/// the input strings, leading to a more or less exact comparison.
-///
-/// Common splits are `""` for char-level, `" "` for word-level and `"\n"` for line-level.
-///
-/// Outputs the edit distance (how much the two strings differ) and a "changeset", that is
-/// a `Vec` containing `Difference`s.
-///
-/// # Examples
-///
-/// ```
-/// use difference_rs::diff;
-/// use difference_rs::Difference;
-///
-/// let (dist, changeset) = diff("test", "tent", "");
-///
-/// assert_eq!(changeset, vec![
-///     Difference::Same("te".to_string()),
-///     Difference::Rem("s".to_string()),
-///     Difference::Add("n".to_string()),
-///     Difference::Same("t".to_string())
-/// ]);
-/// ```
-#[deprecated(since = "1.0.0", note = "please use `Changeset::new` instead")]
-pub fn diff(orig: &str, edit: &str, split: &str) -> (i32, Vec<Difference>) {
-    let ch = Changeset::new(orig, edit, split);
-    (ch.distance, ch.diffs)
-}
-
 /// Assert the difference between two strings. Works like diff, but takes
 /// a fourth parameter that is the expected edit distance (e.g. 0 if you want to
 /// test for equality).
-///
-/// To include this macro use:
-///
-/// ```
-/// #[macro_use(assert_diff)]
-/// # fn main() { }
-/// ```
 ///
 /// Remember that edit distance might not be equal to your understanding of difference,
 /// for example the words "Rust" and "Dust" have an edit distance of 2 because two changes (a
@@ -171,28 +132,6 @@ macro_rules! assert_diff {
             )
         }
     }};
-}
-
-/// **This function is deprecated, `Changeset` now implements the `Display` trait instead**
-///
-/// Prints a colorful visual representation of the diff.
-/// This is just a convenience function for those who want quick results.
-///
-/// I recommend checking out the examples on how to build your
-/// own diff output.
-/// # Examples
-///
-/// ```
-/// use difference_rs::print_diff;
-/// print_diff("Diffs are awesome", "Diffs are cool", " ");
-/// ```
-#[deprecated(
-    since = "1.0.0",
-    note = "`Changeset` now implements the `Display` trait instead"
-)]
-pub fn print_diff(orig: &str, edit: &str, split: &str) {
-    let ch = Changeset::new(orig, edit, split);
-    println!("{}", ch);
 }
 
 #[test]
@@ -313,7 +252,7 @@ fn test_diff_similar_text_with_similar_line_count() {
 }
 
 #[test]
-#[should_panic]
+#[should_panic = r#"assertion failed: edit distance between "Roses are red, violets are blue,\nI wrote this library,\njust for you.\n(It's true)." and "Roses are red, violets are blue,\nI wrote this documentation,\njust for you.\n(It's quite true)." is 2 and not 0, see diffset above"#]
 fn test_assert_diff_panic() {
     let text1 = "Roses are red, violets are blue,\n\
                  I wrote this library,\n\
