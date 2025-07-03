@@ -128,8 +128,8 @@ impl Changeset {
     /// Outputs the edit distance (how much the two strings differ), original string splits, edit string splits, a "changeset", that is
     /// a `Vec` containing `Difference`s.
     ///
-    /// Obs: Splits are included inside the `Difference` vector, as it is the only way to correcly rebuild strings, which differs from
-    /// `Changeset::new` that all splaces are filled by the split.
+    /// Obs: Splits are included inside the `Difference` vector, as it is the only way to correctly rebuild strings, which differs from
+    /// `Changeset::new` that all spaces are filled by a single split.
     ///
     /// # Examples
     ///
