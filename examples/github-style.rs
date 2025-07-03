@@ -3,7 +3,7 @@ use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
 // Screenshot:
-// https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/github-style.png
+// https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/github-style.png
 
 #[allow(unused_must_use)]
 fn main() {
@@ -22,7 +22,7 @@ fn main() {
     let mut t = term::stdout().unwrap();
 
     for i in 0..diffs.len() {
-        #[allow(clippy::match_on_vec_items)]
+        #[allow(clippy::indexing_slicing)]
         match diffs[i] {
             Difference::Same(ref x) => {
                 t.reset().unwrap();

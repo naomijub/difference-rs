@@ -3,7 +3,7 @@ use difference_rs::{Changeset, Difference};
 use std::io::Write;
 
 // Screenshot:
-// https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/word-underline.png
+// https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/word-underline.png
 
 #[allow(unused_must_use)]
 fn main() {

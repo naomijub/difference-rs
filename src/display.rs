@@ -1,5 +1,7 @@
+use crate::ChangesetMulti;
+
 use super::{Changeset, Difference};
-use std::fmt;
+use std::{char::REPLACEMENT_CHARACTER, fmt};
 
 impl fmt::Display for Changeset {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -13,6 +15,68 @@ impl fmt::Display for Changeset {
                 }
                 Difference::Rem(ref x) => {
                     write!(f, "\x1b[91m{}\x1b[0m{}", x, self.split)?;
+                }
+            }
+        }
+        Ok(())
+    }
+}
+
+impl fmt::Display for ChangesetMulti {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut orig_counter = 0;
+        let mut edit_counter = 0;
+        for d in &self.diffs {
+            match *d {
+                Difference::Same(ref x) => {
+                    let orig = x.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
+                    for word in orig {
+                        orig_counter += word.len();
+                        edit_counter += word.len();
+                        if let Some(split) = self
+                            .splits
+                            .iter()
+                            .find(|(idx, _split)| idx == &orig_counter)
+                        {
+                            orig_counter += split.1.len();
+                            edit_counter += split.1.len();
+                            write!(f, "{}{}", word, split.1)?;
+                        } else {
+                            write!(f, "{word}")?;
+                        }
+                    }
+                }
+                Difference::Add(ref x) => {
+                    let edit = x.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
+                    for word in edit {
+                        edit_counter += word.len();
+                        if let Some(split) = self
+                            .edit_splits
+                            .iter()
+                            .find(|(idx, _split)| idx == &edit_counter)
+                        {
+                            edit_counter += split.1.len();
+                            write!(f, "\x1b[92m{}\x1b[0m{}", word, split.1)?;
+                        } else {
+                            write!(f, "\x1b[92m{word}\x1b[0m")?;
+                        }
+                    }
+                }
+                Difference::Rem(ref x) => {
+                    let orig = x.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
+                    for word in orig {
+                        orig_counter += word.len();
+                        if let Some(split) = self
+                            .splits
+                            .iter()
+                            .find(|(idx, _split)| idx == &orig_counter)
+                        {
+                            orig_counter += split.1.len();
+                            write!(f, "\x1b[91m{}\x1b[0m{}", word, split.1)?;
+                        } else {
+                            write!(f, "\x1b[91m{word}\x1b[0m")?;
+                        }
+                    }
                 }
             }
         }
@@ -91,6 +155,19 @@ mod tests {
         let ch = Changeset::new(text1, text2, "\n");
         let mut result: Vec<u8> = Vec::new();
         write!(result, "{ch}").unwrap();
+        debug_bytes(&result, expected);
+        assert_eq!(result, vb(expected));
+    }
+
+    #[test]
+    fn test_display_multi() {
+        let text1 = "https://localhost:8080/path?query=value";
+        let text2 = "https://myapi.com/api/path?query=asset";
+        let expected = b"https://\x1b[91mlocalhost:8080\x1b[0m/\x1b[92mmyapi.com\x1b[0m/\x1b[92mapi\x1b[0m/path?query=\x1b[91mvalue\x1b[0m\x1b[92masset\x1b[0m";
+
+        let cg = Changeset::new_multi(text1, text2, &["://", "/", "?", "="]);
+        let mut result: Vec<u8> = Vec::new();
+        write!(result, "{cg}").unwrap();
         debug_bytes(&result, expected);
         assert_eq!(result, vb(expected));
     }

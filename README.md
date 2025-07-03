@@ -21,8 +21,29 @@ assert_eq!(changeset.diffs, vec![
 ]);
 ```
 
-![](https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/fox.png)
-![](https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/github-style.png)
+![](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/fox.png)
+![](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/github-style.png)
+
+```rust
+use difference_rs::{Changeset, Difference};
+
+let changeset = Changeset::new_multi(
+   "https://localhost:8080/path?query=value",
+   "https://myapi.com/api/path?query=asset",
+   &["://", "/", "?", "="],
+);
+
+assert_eq!(changeset.diffs, vec![
+    Difference::Same("https".to_string()),
+    Difference::Rem("localhost:8080".to_string()),
+    Difference::Add("myapi.com�api".to_string()),
+    Difference::Same("path�query".to_string()),
+    Difference::Rem("value".to_string()),
+    Difference::Add("asset".to_string()),
+]);
+```
+
+![](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/uri-underline.png)
 
 Usage
 ----------
@@ -31,7 +52,7 @@ Add the following to your Cargo.toml:
 
 ```toml
 [dependencies]
-difference_rs = "3.0"
+difference_rs = "3.1"
 ```
 
 Now you can use the crate in your code

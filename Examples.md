@@ -6,16 +6,22 @@ These examples use the official term library to format output.
 
 [examples/line-by-line.rs](examples/line-by-line.rs)
 
-![line-by-line.rs](https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/git-style.png)
+![line-by-line.rs](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/git-style.png)
 
 ## Underline words (GitHub Style)
 
 [examples/underline-words.rs](examples/underline-words.rs)
 
-![underline-words.rs](https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/word-underline.png)
+![underline-words.rs](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/word-underline.png)
+
+## Underline URI - Multi Splits (GitHub Style)
+
+[examples/underline-uri.rs](examples/underline-uri.rs)
+
+![underline-uri.rs](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/uri-underline.png)
 
 ## GitHub Style (Multiline)
 
 [examples/github-style.rs](examples/github-style.rs)
 
-![github-style.rs](https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/github-style.png)
+![github-style.rs](https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/github-style.png)

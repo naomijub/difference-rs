@@ -9,7 +9,7 @@ use std::io::Write;
  * on the type of `Difference`.
  *
  * Screenshot:
- * https://raw.githubusercontent.com/naomijub/difference_rs/master/assets/git-style.png
+ * https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/git-style.png
  */
 
 #[allow(unused_must_use)]

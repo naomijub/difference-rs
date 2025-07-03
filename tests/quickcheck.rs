@@ -44,7 +44,7 @@ impl<'a> Check<'a> {
     }
 
     fn check(&self) -> TestResult {
-        let split = &self.changeset.split;
+        let split = self.changeset.split.as_str();
 
         let mut old: Vec<&str> = Vec::new();
         let mut new: Vec<&str> = Vec::new();
