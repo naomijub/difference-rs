@@ -1,5 +1,5 @@
 #![expect(missing_docs)]
-use difference_rs::{Changeset, Difference};
+use difference_rs::{Changeset, ChangesetMulti, Difference};
 use std::io::Write;
 
 // Screenshot:
@@ -7,12 +7,12 @@ use std::io::Write;
 
 #[allow(unused_must_use)]
 fn main() {
-    let text1 = "Roses are red, violets are blue.";
-    let text2 = "Roses are blue, violets are";
+    let uri_1 = "https://localhost:8080/path?query=value";
+    let uri_2 = "https://myapi.com/api/path?query=asset";
 
     let mut t = term::stdout().unwrap();
 
-    let Changeset { diffs, .. } = Changeset::new(text1, text2, "");
+    let ChangesetMulti { diffs, .. } = Changeset::new_multi(uri_1, uri_2, &["://", "/", "?", "="]);
 
     for c in &diffs {
         match *c {
@@ -23,7 +23,7 @@ fn main() {
             Difference::Rem(ref z) => {
                 t.fg(term::color::WHITE).unwrap();
                 t.bg(term::color::RED).unwrap();
-                write!(t, "{z}");
+                write!(t, "{z}").unwrap();
                 t.reset().unwrap();
             }
             Difference::Add(_) => (),

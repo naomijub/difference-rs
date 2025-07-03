@@ -38,6 +38,9 @@
 mod display;
 mod lcs;
 mod merge;
+mod multi;
+
+use std::char::REPLACEMENT_CHARACTER;
 
 use crate::lcs::lcs;
 use crate::merge::merge;
@@ -56,7 +59,7 @@ pub enum Difference {
 }
 
 /// The information about a full changeset
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Changeset {
     /// An ordered vector of `Difference` objects, corresponding
     /// to the differences within the text
@@ -64,6 +67,20 @@ pub struct Changeset {
     /// The split used when creating the `Changeset`
     /// Common splits are `""` for char-level, `" "` for word-level and `"\n"` for line-level.
     pub split: String,
+    /// The edit distance of the `Changeset`
+    pub distance: i128,
+}
+
+/// The information about a full changeset when regarding a multi split changeset
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ChangesetMulti {
+    /// An ordered vector of `Difference` objects, corresponding
+    /// to the differences within the text
+    pub diffs: Vec<Difference>,
+    /// The splits used when creating the `Changeset` with their respective indexes in the origin string.
+    pub splits: Vec<(usize, String)>,
+    /// The splits used when creating the `Changeset` with their respective indexes in the edit string.
+    pub edit_splits: Vec<(usize, String)>,
     /// The edit distance of the `Changeset`
     pub distance: i128,
 }
@@ -101,6 +118,62 @@ impl Changeset {
             split: split.to_string(),
             distance: dist,
         }
+    }
+
+    /// Creates a `Changeset` with multiple possible splits.
+    /// The first string is assumed to be the "original", the second to be an
+    /// edited version of the first. The third parameter specifies how to split
+    /// the input strings, leading to a more or less exact comparison.
+    ///
+    /// Outputs the edit distance (how much the two strings differ), original string splits, edit string splits, a "changeset", that is
+    /// a `Vec` containing `Difference`s.
+    ///
+    /// Obs: Splits are included inside the `Difference` vector, as it is the only way to correctly rebuild strings, which differs from
+    /// `Changeset::new` that all spaces are filled by a single split.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use difference_rs::{Changeset, Difference};
+    ///
+    /// let changeset = Changeset::new_multi(
+    ///    "https://localhost:8080/path?query=value",
+    ///    "https://myapi.com/api/path?query=asset",
+    ///    &["://", "/", "?", "="],
+    /// );
+    ///
+    /// assert_eq!(changeset.diffs, vec![
+    ///     Difference::Same("https://".to_string()),
+    ///     Difference::Rem("localhost:8080/".to_string()),
+    ///     Difference::Add("myapi.com/api/".to_string()),
+    ///     Difference::Same("path?query=".to_string()),
+    ///     Difference::Rem("value".to_string()),
+    ///     Difference::Add("asset".to_string()),
+    /// ]);
+    /// ```
+    #[must_use]
+    pub fn new_multi(orig: &str, edit: &str, splits: &[&str]) -> ChangesetMulti {
+        let matched_splits = splits
+            .iter()
+            .flat_map(|split| orig.match_indices(*split))
+            .map(|(k, v)| (k, v.to_string()))
+            .collect::<Vec<(usize, String)>>();
+        let edit_splits = splits
+            .iter()
+            .flat_map(|split| edit.match_indices(*split))
+            .map(|(k, v)| (k, v.to_string()))
+            .collect::<Vec<(usize, String)>>();
+
+        let mut aux_orig = orig.to_string();
+        let mut aux_edit = edit.to_string();
+        let replacement = REPLACEMENT_CHARACTER.to_string();
+        for split in splits {
+            aux_orig = aux_orig.replace(split, &replacement);
+            aux_edit = aux_edit.replace(split, &replacement);
+        }
+
+        let changeset = Changeset::new(&aux_orig, &aux_edit, &replacement);
+        ChangesetMulti::from((changeset, matched_splits, edit_splits))
     }
 }
 
@@ -274,4 +347,62 @@ fn test_assert_diff() {
     let text2 = "Roses are green, violets are blue";
 
     assert_diff!(text1, text2, " ", 2);
+}
+
+#[test]
+fn test_multi_pattern() {
+    let cg = Changeset::new_multi("hello,world now", "hellow,world later", &[",", " "]);
+    let expected = ChangesetMulti {
+        diffs: vec![
+            Difference::Rem("hello,".to_string()),
+            Difference::Add("hellow,".to_string()),
+            Difference::Same("world ".to_string()),
+            Difference::Rem("now".to_string()),
+            Difference::Add("later".to_string()),
+        ],
+        splits: vec![(5, ",".to_string()), (11, " ".to_string())],
+        edit_splits: vec![(6, ",".to_string()), (12, " ".to_string())],
+        distance: 4,
+    };
+
+    assert_eq!(cg, expected);
+}
+
+#[test]
+fn test_multi_uri_pattern() {
+    let cg = Changeset::new_multi(
+        "https://localhost:8080/path?query=value",
+        "https://myapi.com/api/path?query=asset",
+        &["://", "/", "?", "="],
+    );
+    let expected = ChangesetMulti {
+        diffs: vec![
+            Difference::Same("https://".to_string()),
+            Difference::Rem("localhost:8080/".to_string()),
+            Difference::Add("myapi.com/api/".to_string()),
+            Difference::Same("path?query=".to_string()),
+            Difference::Rem("value".to_string()),
+            Difference::Add("asset".to_string()),
+        ],
+        splits: vec![
+            (5, "://".to_string()),
+            (6, "/".to_string()),
+            (7, "/".to_string()),
+            (22, "/".to_string()),
+            (27, "?".to_string()),
+            (33, "=".to_string()),
+        ],
+        edit_splits: vec![
+            (5, "://".to_string()),
+            (6, "/".to_string()),
+            (7, "/".to_string()),
+            (17, "/".to_string()),
+            (21, "/".to_string()),
+            (26, "?".to_string()),
+            (32, "=".to_string()),
+        ],
+        distance: 5,
+    };
+
+    assert_eq!(cg, expected);
 }
