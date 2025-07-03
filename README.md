@@ -34,10 +34,10 @@ let changeset = Changeset::new_multi(
 );
 
 assert_eq!(changeset.diffs, vec![
-    Difference::Same("https".to_string()),
-    Difference::Rem("localhost:8080".to_string()),
-    Difference::Add("myapi.com�api".to_string()),
-    Difference::Same("path�query".to_string()),
+    Difference::Same("https://".to_string()),
+    Difference::Rem("localhost:8080/".to_string()),
+    Difference::Add("myapi.com/api/".to_string()),
+    Difference::Same("path?query=".to_string()),
     Difference::Rem("value".to_string()),
     Difference::Add("asset".to_string()),
 ]);
