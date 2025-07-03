@@ -1,6 +1,6 @@
 #![expect(missing_docs)]
 use difference_rs::{Changeset, ChangesetMulti, Difference};
-use std::{char::REPLACEMENT_CHARACTER, io::Write};
+use std::io::Write;
 
 // Screenshot:
 // https://raw.githubusercontent.com/naomijub/difference-rs/master/assets/word-underline.png
@@ -12,46 +12,18 @@ fn main() {
 
     let mut t = term::stdout().unwrap();
 
-    let ChangesetMulti {
-        diffs,
-        splits,
-        edit_splits,
-        ..
-    } = Changeset::new_multi(uri_1, uri_2, &["://", "/", "?", "="]);
+    let ChangesetMulti { diffs, .. } = Changeset::new_multi(uri_1, uri_2, &["://", "/", "?", "="]);
 
-    let mut orig_counter = 0;
-    let mut edit_counter = 0;
     for c in &diffs {
         match *c {
             Difference::Same(ref z) => {
-                let orig = z.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
-                for word in orig {
-                    orig_counter += word.len();
-                    if let Some(split) = splits.iter().find(|(idx, _split)| idx == &orig_counter) {
-                        orig_counter += split.1.len();
-                        t.fg(term::color::RED).unwrap();
-                        write!(t, "{word}{}", split.1).unwrap();
-                    } else {
-                        t.fg(term::color::RED).unwrap();
-                        write!(t, "{word}");
-                    }
-                }
+                t.fg(term::color::RED).unwrap();
+                write!(t, "{z}");
             }
             Difference::Rem(ref z) => {
-                let orig = z.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
-                for word in orig {
-                    orig_counter += word.len();
-                    if let Some(split) = splits.iter().find(|(idx, _split)| idx == &orig_counter) {
-                        orig_counter += split.1.len();
-                        t.fg(term::color::WHITE).unwrap();
-                        t.bg(term::color::RED).unwrap();
-                        write!(t, "{}{}", word, split.1).unwrap();
-                    } else {
-                        t.fg(term::color::WHITE).unwrap();
-                        t.bg(term::color::RED).unwrap();
-                        write!(t, "{word}").unwrap();
-                    }
-                }
+                t.fg(term::color::WHITE).unwrap();
+                t.bg(term::color::RED).unwrap();
+                write!(t, "{z}").unwrap();
                 t.reset().unwrap();
             }
             Difference::Add(_) => (),
@@ -64,40 +36,13 @@ fn main() {
     for c in &diffs {
         match *c {
             Difference::Same(ref z) => {
-                let edit = z.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
-                for word in edit {
-                    edit_counter += word.len();
-                    if let Some(split) = edit_splits
-                        .iter()
-                        .find(|(idx, _split)| idx == &edit_counter)
-                    {
-                        edit_counter += split.1.len();
-                        t.fg(term::color::GREEN).unwrap();
-                        write!(t, "{word}{}", split.1).unwrap();
-                    } else {
-                        t.fg(term::color::GREEN).unwrap();
-                        write!(t, "{word}");
-                    }
-                }
+                t.fg(term::color::GREEN).unwrap();
+                write!(t, "{z}");
             }
             Difference::Add(ref z) => {
-                let edit = z.as_str().split(REPLACEMENT_CHARACTER).collect::<Vec<_>>();
-                for word in edit {
-                    edit_counter += word.len();
-                    if let Some(split) = edit_splits
-                        .iter()
-                        .find(|(idx, _split)| idx == &edit_counter)
-                    {
-                        edit_counter += split.1.len();
-                        t.fg(term::color::WHITE).unwrap();
-                        t.bg(term::color::GREEN).unwrap();
-                        write!(t, "{}{}", word, split.1);
-                    } else {
-                        t.fg(term::color::WHITE).unwrap();
-                        t.bg(term::color::GREEN).unwrap();
-                        write!(t, "{word}");
-                    }
-                }
+                t.fg(term::color::WHITE).unwrap();
+                t.bg(term::color::GREEN).unwrap();
+                write!(t, "{z}");
                 t.reset().unwrap();
             }
             Difference::Rem(_) => (),

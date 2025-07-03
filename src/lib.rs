@@ -38,6 +38,7 @@
 mod display;
 mod lcs;
 mod merge;
+mod multi;
 
 use std::char::REPLACEMENT_CHARACTER;
 
@@ -127,6 +128,9 @@ impl Changeset {
     /// Outputs the edit distance (how much the two strings differ), original string splits, edit string splits, a "changeset", that is
     /// a `Vec` containing `Difference`s.
     ///
+    /// Obs: Splits are included inside the `Difference` vector, as it is the only way to correcly rebuild strings, which differs from
+    /// `Changeset::new` that all splaces are filled by the split.
+    ///
     /// # Examples
     ///
     /// ```
@@ -139,10 +143,10 @@ impl Changeset {
     /// );
     ///
     /// assert_eq!(changeset.diffs, vec![
-    ///     Difference::Same("https".to_string()),
-    ///     Difference::Rem("localhost:8080".to_string()),
-    ///     Difference::Add("myapi.com�api".to_string()),
-    ///     Difference::Same("path�query".to_string()),
+    ///     Difference::Same("https://".to_string()),
+    ///     Difference::Rem("localhost:8080/".to_string()),
+    ///     Difference::Add("myapi.com/api/".to_string()),
+    ///     Difference::Same("path?query=".to_string()),
     ///     Difference::Rem("value".to_string()),
     ///     Difference::Add("asset".to_string()),
     /// ]);
@@ -169,12 +173,7 @@ impl Changeset {
         }
 
         let changeset = Changeset::new(&aux_orig, &aux_edit, &replacement);
-        ChangesetMulti {
-            splits: matched_splits,
-            edit_splits,
-            distance: changeset.distance,
-            diffs: changeset.diffs,
-        }
+        ChangesetMulti::from((changeset, matched_splits, edit_splits))
     }
 }
 
@@ -355,9 +354,9 @@ fn test_multi_pattern() {
     let cg = Changeset::new_multi("hello,world now", "hellow,world later", &[",", " "]);
     let expected = ChangesetMulti {
         diffs: vec![
-            Difference::Rem("hello".to_string()),
-            Difference::Add("hellow".to_string()),
-            Difference::Same("world".to_string()),
+            Difference::Rem("hello,".to_string()),
+            Difference::Add("hellow,".to_string()),
+            Difference::Same("world ".to_string()),
             Difference::Rem("now".to_string()),
             Difference::Add("later".to_string()),
         ],
@@ -378,10 +377,10 @@ fn test_multi_uri_pattern() {
     );
     let expected = ChangesetMulti {
         diffs: vec![
-            Difference::Same("https".to_string()),
-            Difference::Rem("localhost:8080".to_string()),
-            Difference::Add("myapi.com�api".to_string()),
-            Difference::Same("path�query".to_string()),
+            Difference::Same("https://".to_string()),
+            Difference::Rem("localhost:8080/".to_string()),
+            Difference::Add("myapi.com/api/".to_string()),
+            Difference::Same("path?query=".to_string()),
             Difference::Rem("value".to_string()),
             Difference::Add("asset".to_string()),
         ],

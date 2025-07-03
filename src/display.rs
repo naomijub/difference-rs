@@ -163,7 +163,7 @@ mod tests {
     fn test_display_multi() {
         let text1 = "https://localhost:8080/path?query=value";
         let text2 = "https://myapi.com/api/path?query=asset";
-        let expected = b"https://\x1b[91mlocalhost:8080\x1b[0m/\x1b[92mmyapi.com\x1b[0m/\x1b[92mapi\x1b[0m/path?query=\x1b[91mvalue\x1b[0m\x1b[92masset\x1b[0m";
+        let expected = b"https://\x1b[91mlocalhost:8080/\x1b[0m\x1b[92mmyapi.com/api/\x1b[0mpath?query=\x1b[91mvalue\x1b[0m\x1b[92masset\x1b[0m";
 
         let cg = Changeset::new_multi(text1, text2, &["://", "/", "?", "="]);
         let mut result: Vec<u8> = Vec::new();
