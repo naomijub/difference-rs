@@ -52,7 +52,15 @@ Add the following to your Cargo.toml:
 
 ```toml
 [dependencies]
-difference_rs = "3.1"
+difference_rs = "3.2"
+```
+
+If you require serialization of the the Differences, use the feature `serde`:
+
+> This implements `serde::{Serialize, Deserialize}` for `Difference`, `Changeset`, `ChangesetMulti`
+```toml
+[dependencies]
+difference_rs = { version = "3.2", feature = ["serde"] }
 ```
 
 Now you can use the crate in your code
