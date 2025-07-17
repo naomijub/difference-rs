@@ -275,7 +275,10 @@ fn test_diff_smaller_line_count_on_left() {
 
     let json = serde_json::to_string(&changeset).unwrap();
 
-    assert_eq!(json, r#"{"diffs":[{"Rem":"Hello"},{"Add":"Ola"},{"Same":"world"},{"Add":"How is it\ngoing?"}],"split":"\n","distance":4}"#);
+    assert_eq!(
+        json,
+        r#"{"diffs":[{"Rem":"Hello"},{"Add":"Ola"},{"Same":"world"},{"Add":"How is it\ngoing?"}],"split":"\n","distance":4}"#
+    );
 }
 
 #[test]
