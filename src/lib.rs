@@ -49,6 +49,7 @@ use crate::merge::merge;
 /// Changesets will be delivered in order of appearance in the original string
 /// Sequences of the same kind will be grouped into one Difference
 #[derive(PartialEq, Eq, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Difference {
     /// Sequences that are the same
     Same(String),
@@ -60,6 +61,7 @@ pub enum Difference {
 
 /// The information about a full changeset
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Changeset {
     /// An ordered vector of `Difference` objects, corresponding
     /// to the differences within the text
@@ -73,6 +75,7 @@ pub struct Changeset {
 
 /// The information about a full changeset when regarding a multi split changeset
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ChangesetMulti {
     /// An ordered vector of `Difference` objects, corresponding
     /// to the differences within the text
@@ -253,6 +256,7 @@ fn test_diff_brief() {
 }
 
 #[test]
+#[cfg(feature = "serde")]
 fn test_diff_smaller_line_count_on_left() {
     let text1 = "Hello\nworld";
     let text2 = "Ola\nworld\nHow is it\ngoing?";
@@ -268,6 +272,10 @@ fn test_diff_smaller_line_count_on_left() {
             Difference::Add("How is it\ngoing?".to_string()),
         ]
     );
+
+    let json = serde_json::to_string(&changeset).unwrap();
+
+    assert_eq!(json, r#"{"diffs":[{"Rem":"Hello"},{"Add":"Ola"},{"Same":"world"},{"Add":"How is it\ngoing?"}],"split":"\n","distance":4}"#);
 }
 
 #[test]
